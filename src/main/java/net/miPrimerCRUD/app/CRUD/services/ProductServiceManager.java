@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 /**
  * Implementación del servicio {@link ProductService}.
  *
@@ -49,7 +51,7 @@ public class ProductServiceManager implements ProductService{
      * @return El producto encontrado
      */
     @Override
-    public Product findByID(Long id) {
+    public Product findById(Long id) {
         return this.repository.findById(id).get();
     }
     /**
@@ -63,4 +65,41 @@ public class ProductServiceManager implements ProductService{
     public Product save(Product product) {
         return this.repository.save(product);
     }
+    /**
+     * Actualiza un producto existente identificándolo por su ID.
+     *
+     * Busca el producto en la base de datos, modifica sus campos name y price
+     * con los valores recibidos, y lo guarda de nuevo.
+     *
+     * @param id      ID del producto que se quiere actualizar
+     * @param product Objeto que contiene los nuevos valores para name y price
+     * @return El producto ya actualizado con los nuevos datos
+     * Exception si no existe un producto con ese ID
+     */
+    @Override
+    public Product update(Long id, Product product) {
+        // Buscamos el producto existente (si no existe, lanza excepción)
+        Product prod = this.repository.findById(id).get();
+        // Actualizamos los campos modificables
+        prod.setName(product.getName());
+        prod.setPrice(product.getPrice());
+        // Guardamos los cambios en la base de datos
+        return this.repository.save(prod);
+    }
+
+    /**
+     * Elimina un producto de la base de datos por su ID.
+     * Primero verifica que el producto exista (para lanzar error temprano si no),
+     * y luego lo borra definitivamente.
+     * @param id ID del producto a eliminar
+     * Exception si no existe un producto con ese ID
+     */
+    @Override
+    public void deleteById(Long id) {
+        // Verificamos que el producto exista (lanza excepción si no)
+        this.repository.findById(id);
+        // Procedemos a eliminarlo de la base de datos
+        this.repository.deleteById(id);
+    }
+
 }
