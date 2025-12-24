@@ -30,7 +30,7 @@ public interface ProductService {
      * @return El producto encontrado.
      * @throws RuntimeException (o excepción personalizada) si no existe un producto con ese ID.
      */
-    Product findByID(Long id);
+    Product findById(Long id);
 
     /**
      * Guarda un producto en la base de datos.
@@ -41,5 +41,21 @@ public interface ProductService {
      * @return El producto guardado, con el ID asignado (en caso de ser nuevo).
      */
     Product save(Product product);
+    /**
+     * Actualiza los datos de un producto existente identificado por su ID.
+     * Este método permite modificar los campos editables (name y price) de un producto
+     * que ya existe en la base de datos.
+     * @param id      El ID del producto que se desea actualizar. No puede ser null.
+     * @param product Objeto que contiene los nuevos valores para los campos modificables.
+     * @return El producto ya actualizado con los nuevos datos.
+     * @throws RuntimeException (o excepción personalizada) si no existe un producto con ese ID.
+     */
+    Product update(Long id,Product product);
+    /**
+     * Elimina un producto de la base de datos por su identificador único (ID).
+     * @param id El ID del producto a eliminar. No puede ser null.
+     * excepción si no existe un producto con ese ID.
+     */
+    void deleteById(Long id);
 
 }
