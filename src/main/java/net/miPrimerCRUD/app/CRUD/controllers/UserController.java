@@ -1,16 +1,17 @@
 package net.miPrimerCRUD.app.CRUD.controllers;
 
 import jakarta.validation.Valid;
+import net.miPrimerCRUD.app.CRUD.DTO.UserDTO;
 import net.miPrimerCRUD.app.CRUD.entities.User;
+import net.miPrimerCRUD.app.CRUD.mapper.UserMapper;
 import net.miPrimerCRUD.app.CRUD.services.UserServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,26 +22,37 @@ public class UserController {
 
     @GetMapping
     @Transactional(readOnly = true)
-    public List<User> findAllUsers(){return this.serviceManager.findAll();}
+    public List<UserDTO> findAllUsers() {
+        return this.serviceManager.findAll()
+                .stream()
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
-    public User findByidUser(@PathVariable Long id){return this.serviceManager.findById(id);}
+    public UserDTO findByIdUser(@PathVariable Long id) {
+        User user = this.serviceManager.findById(id);
+        return UserMapper.toDTO(user);
+    }
 
     @PostMapping
     @Transactional
-    public User save(@Valid @RequestBody User user){return this.serviceManager.save(user);}
+    public UserDTO save(@Valid @RequestBody User user) {
+        User savedUser = this.serviceManager.save(user);
+        return UserMapper.toDTO(savedUser);
+    }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody User user){
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody User user) {
         User updated = this.serviceManager.update(id, user);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(UserMapper.toDTO(updated));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         this.serviceManager.deleteById(id);
         return ResponseEntity.noContent().build();
     }
