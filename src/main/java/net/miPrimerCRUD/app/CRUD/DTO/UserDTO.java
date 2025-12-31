@@ -13,14 +13,18 @@ public class UserDTO {
     @Email(message = "El email debe tener un formato válido")
     private String email;
 
+    private String role;
+
     // Constructores
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email) {
+    public UserDTO(Long id, String name, String email, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.role = role;
     }
+
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -29,4 +33,6 @@ public class UserDTO {
     public void setName(String name) { this.name = name; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getRole() {return role;}
+    public void setRole(String role) {this.role = role;}
 }
