@@ -10,7 +10,8 @@ public class UserMapper {
         return new UserDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 
@@ -20,6 +21,7 @@ public class UserMapper {
         user.setId(dto.getId());
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
+        user.setRole(dto.getRole());
         return user;
     }
 }

@@ -27,6 +27,9 @@ public class User {
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
+    @Column(nullable = false)
+    private String role = "USER";
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Product> products = new ArrayList<>();
@@ -42,6 +45,16 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public List<Product> getProducts() { return products; }
     public void setProducts(List<Product> products) { this.products = products; }
-
+    public String getRole() {return role;}
+    public void setRole(String role) {this.role = role;}
+    //constructores
     public User() {}
+    public User(Long id, String name, String email, String password, String role, List<Product> products) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.products = products;
+    }
 }
