@@ -43,6 +43,15 @@ public class ProductController {
         return ProductMapper.toDTO(product);
     }
 
+    @GetMapping("/my-products")
+    @Transactional(readOnly = true)
+    public List<ProductDTO> findMyProducts() {
+        return this.serviceManager.findMyProducts()
+                .stream()
+                .map(ProductMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody Product product) {

@@ -27,7 +27,7 @@ public class User {
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'USER'")
     private String role = "USER";
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

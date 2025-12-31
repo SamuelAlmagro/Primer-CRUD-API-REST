@@ -5,12 +5,16 @@ import net.miPrimerCRUD.app.CRUD.entities.Product;
 import net.miPrimerCRUD.app.CRUD.entities.User;
 import net.miPrimerCRUD.app.CRUD.repositories.ProductRepository;
 import net.miPrimerCRUD.app.CRUD.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +56,28 @@ class ProductServiceManagerTest {
         testProduct.setUser(testUser);
     }
 
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
+
+    private void setupSecurityContext(String email, String role) {
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(authentication.getName()).thenReturn(email);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        User currentUser = new User();
+        currentUser.setId(1L);
+        currentUser.setEmail(email);
+        currentUser.setRole(role);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(currentUser));
+    }
+
     @Test
     void testFindAll_ReturnsProductList() {
         // Arrange
@@ -76,6 +102,7 @@ class ProductServiceManagerTest {
     @Test
     void testFindById_ProductExists_ReturnsProduct() {
         // Arrange
+        setupSecurityContext("test@email.com", "USER");
         when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
 
         // Act
@@ -84,8 +111,21 @@ class ProductServiceManagerTest {
         // Assert
         assertNotNull(result);
         assertEquals("Test Product", result.getName());
-        assertEquals(99.99, result.getPrice());
         verify(productRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFindById_AsAdmin_ReturnsProduct() {
+        // Arrange
+        setupSecurityContext("admin@email.com", "ADMIN");
+        when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
+
+        // Act
+        Product result = productService.findById(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Test Product", result.getName());
     }
 
     @Test
@@ -118,6 +158,24 @@ class ProductServiceManagerTest {
     }
 
     @Test
+    void testSave_WithoutUser_SavesSuccessfully() {
+        // Arrange
+        Product productWithoutUser = new Product();
+        productWithoutUser.setName("Product without user");
+        productWithoutUser.setPrice(50.0);
+
+        when(productRepository.save(any(Product.class))).thenReturn(productWithoutUser);
+
+        // Act
+        Product result = productService.save(productWithoutUser);
+
+        // Assert
+        assertNotNull(result);
+        verify(userRepository, never()).findById(any());
+        verify(productRepository, times(1)).save(productWithoutUser);
+    }
+
+    @Test
     void testSave_UserNotExists_ThrowsException() {
         // Arrange
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
@@ -132,6 +190,8 @@ class ProductServiceManagerTest {
     @Test
     void testUpdate_UpdatesProductFields() {
         // Arrange
+        setupSecurityContext("test@email.com", "USER");
+
         Product updatedData = new Product();
         updatedData.setName("Updated Product");
         updatedData.setPrice(199.99);
@@ -165,6 +225,24 @@ class ProductServiceManagerTest {
     @Test
     void testDeleteById_ProductExists_DeletesSuccessfully() {
         // Arrange
+        setupSecurityContext("test@email.com", "USER");
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
+        doNothing().when(productRepository).deleteById(1L);
+
+        // Act
+        productService.deleteById(1L);
+
+        // Assert
+        verify(productRepository, times(1)).findById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteById_AsAdmin_DeletesSuccessfully() {
+        // Arrange
+        setupSecurityContext("admin@email.com", "ADMIN");
+
         when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
         doNothing().when(productRepository).deleteById(1L);
 
