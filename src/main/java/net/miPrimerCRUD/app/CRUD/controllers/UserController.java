@@ -32,7 +32,14 @@ public class UserController {
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     public UserDTO findByIdUser(@PathVariable Long id) {
-        User user = this.serviceManager.findById(id);
+        User user = this.serviceManager.findByIdWithValidation(id);;
+        return UserMapper.toDTO(user);
+    }
+
+    @GetMapping("/me")
+    @Transactional(readOnly = true)
+    public UserDTO getCurrentUser() {
+        User user = this.serviceManager.getCurrentUser();
         return UserMapper.toDTO(user);
     }
 
