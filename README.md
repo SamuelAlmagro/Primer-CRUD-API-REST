@@ -65,7 +65,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/crud
 spring.datasource.username=root
 spring.datasource.password=tu_contraseña_mysql
 ```
-
+el archivo tiene user y contraseña falsos reemplazalos y no muestres no subas tu contraseña
 ### Paso 4: Compilar y ejecutar
 
 ```bash
