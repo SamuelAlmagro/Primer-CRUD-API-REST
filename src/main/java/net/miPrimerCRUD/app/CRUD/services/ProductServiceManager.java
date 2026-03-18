@@ -28,7 +28,6 @@ public class ProductServiceManager implements ProductService{
         return (List<Product>) this.repository.findAll();
     }
 
-    // Nuevo método: listar solo los productos del usuario actual
     public List<Product> findMyProducts() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = auth.getName();
@@ -36,7 +35,6 @@ public class ProductServiceManager implements ProductService{
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario actual no encontrado"));
 
-        // Filtrar productos que pertenecen al usuario actual
         return ((List<Product>) repository.findAll())
                 .stream()
                 .filter(product -> product.getUser() != null &&
