@@ -8,14 +8,14 @@ Esta API proporciona un sistema CRUD (Create, Read, Update, Delete) para la gest
 
 ### Características
 
--  Autenticación HTTP Basic con Spring Security
--  Dos roles: USER y ADMIN
--  Encriptación de contraseñas con BCrypt
--  Validación automática de datos
--  Manejo global de excepciones con mensajes claros
--  Relación uno a muchos entre usuarios y productos
--  Tests unitarios y de integración completos
--  Arquitectura en capas escalable
+- Autenticación HTTP Basic con Spring Security
+- Dos roles: USER y ADMIN
+- Encriptación de contraseñas con BCrypt
+- Validación automática de datos
+- Manejo global de excepciones con mensajes claros
+- Relación uno a muchos entre usuarios y productos
+- Tests unitarios y de integración completos
+- Arquitectura en capas escalable
 
 ### Tecnologías
 
@@ -46,15 +46,17 @@ cd tu-repositorio
 ### Paso 2: Configurar MySQL
 
 1. Inicia sesión en MySQL:
-```bash
-mysql -u root -p
-```
+   
+   ```bash
+   mysql -u root -p
+   ```
 
 2. Crea la base de datos:
-```sql
-CREATE DATABASE crud;
-EXIT;
-```
+   
+   ```sql
+   CREATE DATABASE crud;
+   EXIT;
+   ```
 
 ### Paso 3: Configurar las credenciales
 
@@ -65,7 +67,9 @@ spring.datasource.url=jdbc:mysql://localhost:3306/crud
 spring.datasource.username=root
 spring.datasource.password=tu_contraseña_mysql
 ```
-el archivo tiene user y contraseña falsos reemplazalos y no muestres no subas tu contraseña
+
+
+
 ### Paso 4: Compilar y ejecutar
 
 ```bash
@@ -106,6 +110,7 @@ Esta API usa **HTTP Basic Authentication**, que es simple y funcional para APIs 
 2. **Con autenticación**: Debes enviar tu email y contraseña en cada petición
 
 **Ejemplo práctico:**
+
 ```bash
 # Sin autenticación (usuario:contraseña)
 curl http://localhost:8080/api/users
@@ -115,10 +120,11 @@ curl -u juan@email.com:mipassword123 http://localhost:8080/api/users/me
 ```
 
 **Roles disponibles:**
+
 - **USER**: Rol predeterminado. Puede gestionar sus propios productos y perfil
 - **ADMIN**: Puede ver todos los usuarios, productos y eliminar cualquier recurso
 
-###  Flujo Completo de Uso
+### Flujo Completo de Uso
 
 #### 1. Registrar tu primer usuario
 
@@ -135,6 +141,7 @@ curl -X POST http://localhost:8080/api/users \
 ```
 
 **Respuesta:**
+
 ```json
 {
   "id": 1,
@@ -169,6 +176,7 @@ curl -u juan@email.com:mipassword123 \
 ```
 
 **Respuesta:**
+
 ```json
 {
   "id": 1,
@@ -193,6 +201,7 @@ curl -X POST http://localhost:8080/api/products \
 ```
 
 **Respuesta:**
+
 ```json
 {
   "id": 1,
@@ -227,6 +236,7 @@ curl -u juan@email.com:mipassword123 \
 ```
 
 **Respuesta:**
+
 ```json
 [
   {
@@ -275,6 +285,7 @@ curl -X PUT http://localhost:8080/api/products/1 \
 ```
 
 **Respuesta:**
+
 ```json
 {
   "id": 1,
@@ -316,24 +327,28 @@ Si es exitoso, recibirás un código **204 No Content** (sin cuerpo de respuesta
 Si tienes un usuario con rol ADMIN:
 
 **Ver todos los usuarios:**
+
 ```bash
 curl -u admin@email.com:adminpass \
   http://localhost:8080/api/users
 ```
 
 **Ver todos los productos del sistema:**
+
 ```bash
 curl -u admin@email.com:adminpass \
   http://localhost:8080/api/products
 ```
 
 **Eliminar cualquier usuario:**
+
 ```bash
 curl -X DELETE http://localhost:8080/api/users/5 \
   -u admin@email.com:adminpass
 ```
 
 **Eliminar cualquier producto:**
+
 ```
 curl -X DELETE http://localhost:8080/api/products/10 \
   -u admin@email.com:adminpass
@@ -342,6 +357,7 @@ curl -X DELETE http://localhost:8080/api/products/10 \
 ### Referencia de Endpoints
 
 ## Endpoints de Usuarios
+
 ```
 | Método   | Endpoint          | Descripción                 | Auth  | Rol 
 -------------------------------------------------------------------------
@@ -352,7 +368,9 @@ curl -X DELETE http://localhost:8080/api/products/10 \
 | `PUT`    | `/api/users/{id}` | Actualizar usuario          | ✅ Sí | USER (solo propio) / ADMIN 
 | `DELETE` | `/api/users/{id}` | Eliminar usuario            | ✅ Sí | ADMIN 
 ```
+
 ## Endpoints de Productos
+
 ```
 | Método   | Endpoint                    | Descripción                | Auth |  Rol 
 ---------------------------------------------------------------------------------------
@@ -363,42 +381,49 @@ curl -X DELETE http://localhost:8080/api/products/10 \
 | `PUT`    | `/api/products/{id}`        | Actualizar producto        | ✅ Sí|    USER (solo propio) / ADMIN
 | `DELETE` | `/api/products/{id}`        | Eliminar producto          | ✅ Sí|    USER (solo propio) / ADMIN
 ```
-###  Reglas de Seguridad
+
+### Reglas de Seguridad
+
 ### Control de Acceso
 
 **Usuario normal (USER):**
--  Puede ver su propio perfil
--  Puede actualizar su propio perfil
--  Puede crear productos
--  Puede ver sus propios productos
--  Puede actualizar sus propios productos
--  Puede eliminar sus propios productos
--  No puede ver otros usuarios
--  No puede ver todos los productos del sistema
--  No puede modificar productos de otros usuarios
+
+- Puede ver su propio perfil
+- Puede actualizar su propio perfil
+- Puede crear productos
+- Puede ver sus propios productos
+- Puede actualizar sus propios productos
+- Puede eliminar sus propios productos
+- No puede ver otros usuarios
+- No puede ver todos los productos del sistema
+- No puede modificar productos de otros usuarios
 
 **Administrador (ADMIN):**
--  Puede hacer todo lo que hace un USER
--  Puede ver todos los usuarios del sistema
--  Puede ver todos los productos del sistema
--  Puede modificar cualquier producto
--  Puede eliminar cualquier producto
--  Puede eliminar cualquier usuario
+
+- Puede hacer todo lo que hace un USER
+- Puede ver todos los usuarios del sistema
+- Puede ver todos los productos del sistema
+- Puede modificar cualquier producto
+- Puede eliminar cualquier producto
+- Puede eliminar cualquier usuario
 
 ### Validaciones Automáticas
 
 El sistema valida automáticamente:
 
 **Para usuarios:**
+
 - Nombre: obligatorio, entre 2 y 100 caracteres
 - Email: obligatorio, formato válido, único en el sistema
 - Contraseña: obligatoria (se encripta automáticamente)
 
 **Para productos:**
+
 - Nombre: obligatorio, entre 2 y 200 caracteres
 - Precio: obligatorio, no puede ser negativo
 
 **Ejemplo de error de validación:**
+
 ```json
 {
   "timestamp": "2025-12-31T10:30:00",
@@ -414,9 +439,11 @@ El sistema valida automáticamente:
 ```
 
 ### Tests Implementados
+
 ### Tests de Controladores (Integración)
 
 **UserControllerTest:**
+
 - Crear usuario sin autenticación (registro público)
 - Listar usuarios como ADMIN
 - Impedir listar usuarios como USER (403 Forbidden)
@@ -427,6 +454,7 @@ El sistema valida automáticamente:
 - Impedir eliminar usuario como USER
 
 **ProductControllerTest:**
+
 - Crear producto con autenticación
 - Impedir crear producto sin autenticación
 - Listar productos como ADMIN
@@ -439,6 +467,7 @@ El sistema valida automáticamente:
 ### Tests de Servicios (Unitarios)
 
 **UserServiceManagerTest:**
+
 - Obtener lista de usuarios
 - Buscar usuario por ID existente
 - Lanzar excepción cuando usuario no existe
@@ -449,6 +478,7 @@ El sistema valida automáticamente:
 - Lanzar excepción al eliminar usuario inexistente
 
 **ProductServiceManagerTest:**
+
 - Obtener lista de productos
 - Buscar producto por ID
 - Control de acceso: USER solo ve sus productos
@@ -464,6 +494,7 @@ El sistema valida automáticamente:
 ### Cobertura de Tests
 
 Los tests cubren:
+
 - Casos de éxito (happy path)
 - Casos de error (validaciones, no encontrado)
 - Seguridad (autenticación y autorización)
@@ -526,18 +557,22 @@ src/
 ### Solución de Problemas
 
 ### Error: "Access denied for user 'root'@'localhost'"
+
 - Verifica que las credenciales en `application.properties` sean correctas
 - Asegúrate de que MySQL esté ejecutándose
 
 ### Error: "Table 'crud.users' doesn't exist"
+
 - Verifica que `spring.jpa.hibernate.ddl-auto=update` esté en `application.properties`
 - Reinicia la aplicación para que cree las tablas automáticamente
 
 ### Error: 401 Unauthorized en todas las peticiones
+
 - Verifica que estés enviando las credenciales correctas con `-u`
 - Formato: `-u email:contraseña`
 
 ### Error: 403 Forbidden
+
 - Estás intentando acceder a un recurso que no te pertenece
 - Verifica que tu rol sea el adecuado (ADMIN para ver todos los recursos)
 
